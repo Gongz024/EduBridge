@@ -1,98 +1,16 @@
-import {
-  LayoutDashboard,
-  Users,
-  GraduationCap,
-  BookOpen,
-  FolderOpen,
-  ClipboardList,
-  CalendarCheck,
-  ClipboardCheck,
-  TrendingUp,
-  HeartHandshake,
-  Megaphone,
-  Settings,
-} from "lucide-react";
+import { NavLink } from "react-router-dom";
+import { LogOut } from "lucide-react";
+import { navigation, settingsItem } from "../../config/navigation";
+import { useAuth } from "../../context/useAuth";
+import { getFullName, getInitials, getRoleLabel } from "../../utils/user";
 
-const navigation = [
-  {
-    section: "Overview",
-    items: [
-      {
-        label: "Dashboard",
-        path: "/",
-        icon: LayoutDashboard,
-      },
-    ],
-  },
-  {
-    section: "Teaching",
-    items: [
-      {
-        label: "My Classes",
-        path: "/classes",
-        icon: GraduationCap,
-      },
-      {
-        label: "Students",
-        path: "/students",
-        icon: Users,
-      },
-      {
-        label: "Lessons",
-        path: "/lessons",
-        icon: BookOpen,
-      },
-      {
-        label: "Learning Materials",
-        path: "/materials",
-        icon: FolderOpen,
-      },
-      {
-        label: "Homework & Activities",
-        path: "/homework",
-        icon: ClipboardList,
-      },
-    ],
-  },
-  {
-    section: "Academic",
-    items: [
-      {
-        label: "Attendance",
-        path: "/attendance",
-        icon: CalendarCheck,
-      },
-      {
-        label: "Grades",
-        path: "/grades",
-        icon: ClipboardCheck,
-      },
-      {
-        label: "Progress",
-        path: "/progress",
-        icon: TrendingUp,
-      },
-    ],
-  },
-  {
-    section: "Engagement",
-    items: [
-      {
-        label: "Family Missions",
-        path: "/family-missions",
-        icon: HeartHandshake,
-      },
-      {
-        label: "Announcements",
-        path: "/announcements",
-        icon: Megaphone,
-      },
-    ],
-  },
-];
+function navClassName({ isActive }) {
+  return `nav-item ${isActive ? "active" : ""}`;
+}
 
 function Sidebar() {
-  const currentPath = window.location.pathname;
+  const { user, logout } = useAuth();
+  const SettingsIcon = settingsItem.icon;
 
   return (
     <aside className="sidebar">
@@ -112,20 +30,17 @@ function Sidebar() {
 
             {group.items.map((item) => {
               const Icon = item.icon;
-              const isActive =
-                item.path === "/"
-                  ? currentPath === "/"
-                  : currentPath.startsWith(item.path);
 
               return (
-                <a
-                  href={item.path}
-                  className={`nav-item ${isActive ? "active" : ""}`}
+                <NavLink
+                  to={item.path}
+                  end={item.path === "/"}
+                  className={navClassName}
                   key={item.path}
                 >
                   <Icon size={18} strokeWidth={1.8} />
                   <span>{item.label}</span>
-                </a>
+                </NavLink>
               );
             })}
           </div>
@@ -133,17 +48,22 @@ function Sidebar() {
       </nav>
 
       <div className="sidebar-bottom">
-        <a href="/settings" className="nav-item">
-          <Settings size={18} strokeWidth={1.8} />
-          <span>Settings</span>
-        </a>
+        <NavLink to={settingsItem.path} className={navClassName}>
+          <SettingsIcon size={18} strokeWidth={1.8} />
+          <span>{settingsItem.label}</span>
+        </NavLink>
+
+        <button type="button" className="nav-item nav-button" onClick={logout}>
+          <LogOut size={18} strokeWidth={1.8} />
+          <span>Log out</span>
+        </button>
 
         <div className="teacher-profile">
-          <div className="teacher-avatar">MS</div>
+          <div className="teacher-avatar">{getInitials(user)}</div>
 
           <div className="teacher-info">
-            <strong>Ms. Maria Santos</strong>
-            <span>Teacher</span>
+            <strong>{getFullName(user)}</strong>
+            <span>{getRoleLabel(user)}</span>
           </div>
         </div>
       </div>
