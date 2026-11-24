@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mirrors the web app's CSS tokens in src/index.css -->
+    <color name="primary">#FF24584E</color>
+    <color name="background">#FFF5F6F1</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>
